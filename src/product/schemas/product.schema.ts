@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Section, SectionSchema } from './section.schema';
 
 export type ProductDocument = Product & Document;
 
-@Schema()
+@Schema({ timestamps: true })
+
 export class Product {
     @Prop({ required: true, unique: true })
     name: string; // e.g., "Permit License"
@@ -23,31 +25,36 @@ export class Product {
     @Prop({ required: true })
     timeDuration: string;
 
-    @Prop({
-        type: [
-            {
-                title: { type: String, required: true },
-                fields: [
-                    {
-                        name: { type: String, required: true },
-                        type: { type: String, required: true },
-                        required: { type: Boolean, required: true },
-                        options: { type: [String], required: false }, // for dropdowns
-                    },
-                ],
-            },
-        ],
-        required: true,
-    })
-    sections: {
-        title: string;
-        fields: {
-            name: string;
-            type: string;
-            required: boolean;
-            options?: any[];
-        }[];
-    }[];
+    // @Prop({
+    //     type: [
+    //         {
+    //             title: { type: String, required: true },
+    //             fields: [
+    //                 {
+    //                     name: { type: String, required: true },
+    //                     type: { type: String, required: true },
+    //                     required: { type: Boolean, required: true },
+    //                     options: { type: [String], required: false }, // for dropdowns
+    //                 },
+    //             ],
+    //         },
+    //     ],
+    //     required: true,
+    // })
+    // sections: {
+    //     title: string;
+    //     fields: {
+    //         name: string;
+    //         type: string;
+    //         required: boolean;
+    //         options?: any[];
+    //     }[];
+    // }[];
+    @Prop({ type: [SectionSchema], required: true })
+    sections: Section[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+
+
