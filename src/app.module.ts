@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
 import { JwtAuthGuard } from './user/user.controller';
+import { WorkflowModule } from './workflow/workflow.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -18,17 +20,12 @@ import { JwtAuthGuard } from './user/user.controller';
     ConfigModule.forRoot({
       isGlobal: true, // <-- this makes ConfigService available everywhere
     }),
+    WorkflowModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
+
   ],
 })
 export class AppModule { }

@@ -1,8 +1,8 @@
 
-import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards, Req } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
-import { CreateSubmissionDto, UpdateSubmissionDto } from './dto/create-submission.dto';
+import { CreateSubmissionDto, ReviewSubmissionDto, UpdateSubmissionDto } from './dto/create-submission.dto';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { JwtAuthGuard } from 'src/user/user.controller';
@@ -50,10 +50,22 @@ export class SubmissionController {
 
 
     @Delete(':id')
-    @ApiBearerAuth('access-token')  // swagger documentation
+    @ApiBearerAuth('access-token')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('applicant') // Only allow users with userType 'applicant'
+    @Roles('applicant')
     softDelete(@Param('id') id: string) {
         return this.submissionService.delete(id);
+    }
+
+    @Patch('review/:id')
+    @ApiBearerAuth('access-token')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('staff')
+    async reviewSubmission(
+        @Param('id') id: number,
+        @Body() reviewDto: ReviewSubmissionDto,
+        @Req() req
+    ) {
+        return this.submissionService.reviewSubmission(id, reviewDto, req.user.id);
     }
 }

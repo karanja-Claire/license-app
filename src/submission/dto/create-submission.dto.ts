@@ -27,6 +27,13 @@ export class CreateSubmissionDto {
 
 }
 
+export class ReviewSubmissionDto {
+    @ApiProperty()
+    status: string;
+    @ApiProperty()
+    reviewNotes?: string;
+}
+
 
 
 
